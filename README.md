@@ -1,7 +1,8 @@
 ## 中国大学icourse163视频下载工具
 
 #### 更新
-* 前置登陆，获取`NTESSTUDYSI`；在请求课程详情时设置`NTESSTUDYSI`
+* pdf课件一并下载
+* 前置登陆，获取`NTESSTUDYSI`；在请求课程详情时设置`NTESSTUDYSI`(网易并未校验)
 
 #### 安装指南
 1. 安装python3
@@ -16,7 +17,7 @@
 
 #### 下载
 
-CMD进入本地该项目目录，查看帮助信息。其中只有一个必选参数：`-c`即：课程信息参数
+CMD进入本地该项目目录，查看帮助信息。其中只有一个必选参数：`-c`即：课程链接
 
         D:\download\cn_mooc_dl>python icourse163_dl.py --help
         usage: icourse163_dl.py [-h] [-u USERNAME] [-p PASSWD] -c COURSE [-o OUTPUT]
@@ -29,11 +30,9 @@ CMD进入本地该项目目录，查看帮助信息。其中只有一个必选�
           -p PASSWD, --passwd PASSWD
                                 第三方登陆网站爱课程的密码, 默认:aikechengp
           -c COURSE, --course COURSE
-                                链接中的课程信息，如:TONGJI-47017?tid=44002
+                                课程主页链接
           -o OUTPUT, --output OUTPUT
                                 文件下载路径，默认：当前路径
-          -r RESOLUTION, --resolution RESOLUTION
-                                视频清晰度，shd:超清, hd:高清, sd:标清, 默认:shd
 
 
 进入`icourse163`的课程主页，e.g.`http://www.icourse163.org/course/NUDT-1001616011?tid=1001690014#/info`,
@@ -67,17 +66,30 @@ CMD进入本地该项目目录，查看帮助信息。其中只有一个必选�
 
 
 #### 几点说明
+* 视频清晰度
+
+视频清晰度优先选择超高清(`mp4ShdUrl`, `flvShdUrl`),高清(`mp4HdUrl`, `flvHdUrl`),标清(`mp4SdUrl`, `flvSdUrl`)。如果需要调整下载视频的清晰度，删除
+代码中常量`RESOLUTION_TYPES`其他清晰度元素即可。
+
 * `tid.json`文件
 
 下载开始后，本地课程目录会出现一个`tid.json`的文本文件，该文件保存了课程信息的组织方式及资源地址，再次下载会直接读取`tid.json`文件，
 避免不必要的网络请求。
 
 
+* 代码修改之后还没有进行整个课程的下载测试，如有问题欢迎在[issues](https://github.com/Lovecanon/cn_mooc_dl/issues)中提出
+
 
 TODO
 ----
-* 移除`tid`参数，或使用者直接传入课程链接即可解析，下载
-* 从已保存的`tid.json`文件中加载，视频清晰度与上次下载时一致
+- [x] 移除`tid`参数，或使用者直接传入课程链接即可解析，下载
+注：
+`http://www.icourse163.org/course/NUDT-1001616011`
+`http://www.icourse163.org/course/NUDT-1001616011?tid=1001690014#/info`
+`NUDT-1001616011?tid=1001690014`
+三种情况都可以正常解析，无需再手动查找tid参数。
+- [x] 从已保存的`tid.json`文件中加载，视频清晰度与上次下载时一致。
+注：移除视频清晰度选择项
 
 
 如有问题，欢迎在[issues](https://github.com/Lovecanon/cn_mooc_dl/issues)中提出

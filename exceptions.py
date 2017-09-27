@@ -5,3 +5,11 @@ class LoginException(Exception):
 
 class RequestExcetpion(Exception):
     pass
+
+
+class ParseException(Exception):
+    pass
+
+
+class ParamsException(Exception):
+    pass
