@@ -319,7 +319,7 @@ if __name__ == '__main__':
                        dest='course',
                        type=str,
                        required=True,
-                       help='链接中的课程信息，如:TONGJI-47017?tid=44002')
+                       help='课程链接')
 
     parse.add_argument('-o', '--output',
                        dest='output',

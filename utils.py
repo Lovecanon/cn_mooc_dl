@@ -64,7 +64,7 @@ class DownloadProgress(object):
 
     def calc_speed(self):
         dif = self._time_now - self._time_start
-        if self._current == 0 or dif < 0.001:  # One millisecond
+        if self._current == 0 or float(dif) < 0.001:  # One millisecond
             return '---b/s    '
         return '{0}/s    '.format(format_bytes(float(self._current - self._start) / dif))
 
