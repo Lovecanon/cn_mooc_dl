@@ -44,7 +44,7 @@ CMD进入本地该项目目录，查看帮助信息。其中只有一个必选�
 
 
 运行，下载`TONGJI-47017?tid=44002`课程到`E://`目录下，文件保存方式类似于下面日志打印的格式
-![image](https://github.com/Lovecanon/cn_mooc_dl/capture/downloading.gif)
+![image](https://github.com/Lovecanon/cn_mooc_dl/raw/master/capture/downloading.gif)
 
 #### 几点说明
 * 视频清晰度
