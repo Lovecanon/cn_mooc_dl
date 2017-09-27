@@ -7,9 +7,7 @@ import time
 import math
 import sys
 import os
-import argparse
 import re
-import zlib
 import errno
 
 
@@ -224,60 +222,15 @@ def resume_download_file(session, url, filename, overwrite=False):
         break
 
 
-def parse_args():
-    """
-    Argument Parser
-    """
-    parser = argparse.ArgumentParser(description='Download lecture material from mooc websites')
-
-    parser.add_argument('-u',
-                        '--username',
-                        dest='username',
-                        action='store',
-                        default=None,
-                        help='username')
-
-    parser.add_argument('-p',
-                        '--password',
-                        dest='password',
-                        action='store',
-                        default=None,
-                        help='password')
-
-    parser.add_argument('course_url',
-                        action='store',
-                        nargs='+',
-                        help='(e.g. "http://www.xuetangx.com/courses/NTHU/MOOC_01_004/2014_T2/courseware/")')
-
-    # optional
-    parser.add_argument('--path',
-                        dest='path',
-                        action='store',
-                        default='.',
-                        help='path to save the files')
-
-    parser.add_argument('-o',
-                        '--overwrite',
-                        dest='overwrite',
-                        action='store_true',
-                        default=False,
-                        help='whether existing files should be overwritten'
-                             ' (default: False)')
-
-    args = parser.parse_args()
-
-    return args
-
-
 def clean_filename(s):
     """
     Amend  string to legal filename
     """
-    s = s.replace(':', '_') \
+    s = s.strip()\
+        .replace(':', '_') \
         .replace('/', '_') \
         .replace('\x00', '_') \
-        .replace('\xa0', '')
-    s = re.sub('[\n\\\*><\?\"\|\t]', '', s)
-    s = re.sub(' +$', '', s)  # 去尾空格
-    s = re.sub('^ +', '', s)  # 去首空格
+        .replace('\xa0', '') \
+        .replace(' ', '_')
+    s = re.sub('[\n\\\*><\?\"\|\t\s]', '', s)
     return s
