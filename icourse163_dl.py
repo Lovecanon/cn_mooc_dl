@@ -301,32 +301,26 @@ def main(course, username, passwd, output):
 
 
 if __name__ == '__main__':
-    parse = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()
 
-    parse.add_argument('-u', '--username',
-                       default=AKC_USERNAME,
-                       dest='username',
-                       type=str,
-                       required=False,
-                       help="第三方登陆网站爱课程的用户名, 默认:535036628@qq.com")
-    parse.add_argument('-p', '--passwd',
-                       default=AKC_PASSWD,
-                       dest='passwd',
-                       type=str,
-                       required=False,
-                       help="第三方登陆网站爱课程的密码, 默认:aikechengp")
-    parse.add_argument('-c', '--course',
-                       dest='course',
-                       type=str,
-                       required=True,
-                       help='课程链接')
-
-    parse.add_argument('-o', '--output',
-                       dest='output',
-                       default=OUTPUT_FOLDER,
-                       type=str,
-                       required=False,
-                       help='文件下载路径，默认：当前路径')
-
-    result = parse.parse_args()
-    main(result.course, result.username, result.passwd, result.output)
+    parser.add_argument('-u', '--username',
+                        default=AKC_USERNAME,
+                        dest='username',
+                        type=str,
+                        required=False,
+                        help="第三方登陆网站爱课程的用户名, 默认:535036628@qq.com")
+    parser.add_argument('-p', '--passwd',
+                        default=AKC_PASSWD,
+                        dest='passwd',
+                        type=str,
+                        required=False,
+                        help="第三方登陆网站爱课程的密码, 默认:aikechengp")
+    parser.add_argument('-o', '--output',
+                        dest='output',
+                        default=OUTPUT_FOLDER,
+                        type=str,
+                        required=False,
+                        help='文件下载路径，默认：当前路径')
+    parser.add_argument("url", type=str, help="课程链接")
+    result = parser.parse_args()
+    main(result.url, result.username, result.passwd, result.output)
