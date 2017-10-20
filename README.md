@@ -17,7 +17,7 @@
 
 #### 下载
 
-CMD进入本地该项目目录，查看帮助信息。其中只有一个必选参数：`-c`即：课程链接
+CMD进入本地该项目目录，查看帮助信息。
 
         D:\download\cn_mooc_dl>python icourse163_dl.py --help
         usage: icourse163_dl.py [-h] [-u USERNAME] [-p PASSWD] [-o OUTPUT] url
