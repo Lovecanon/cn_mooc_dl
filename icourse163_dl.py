@@ -160,16 +160,16 @@ def get_file_url(content_id, _id, resolution=None, file_type='video'):
             return doc_match[0]
 
 
-def dump_course_detail(dict_result, file_path):
-    """dump query result to local file"""
-    json.dump(dict_result, open(file_path, 'w', encoding='utf-8'), encoding='utf-8')
+# def dump_course_detail(dict_result, file_path):
+#     """dump query result to local file"""
+#     json.dump(dict_result, open(file_path, 'w', encoding='utf-8'))
 
 
 def parse_course_detail(content, output_folder, tid):
     """parse course video and doc detail from response body or xxx.json file"""
-    json_file_path = os.path.join(output_folder, '{}.json'.format(tid))
-    if os.path.exists(json_file_path):
-        return json.load(open(json_file_path, 'r', encoding='utf-8'))
+    # json_file_path = os.path.join(output_folder, '{}.json'.format(tid))
+    # if os.path.exists(json_file_path):
+    #     return json.load(open(json_file_path, 'r', encoding='utf-8'))
 
     term = dict()
     last_week_name = ''
@@ -208,7 +208,7 @@ def parse_course_detail(content, output_folder, tid):
             logger.info('        %s', '{}.{}'.format(lecture_name, postfix))
     if last_week_name == '':
         raise ParseException('no video information in response body, %s' % content.decode('unicode_escape'))
-    dump_course_detail(term, json_file_path)
+    # dump_course_detail(term, json_file_path)
     return term
 
 
