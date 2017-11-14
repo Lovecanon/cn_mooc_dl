@@ -165,7 +165,7 @@ def get_file_url(content_id, _id, resolution=None, file_type='video'):
 #     json.dump(dict_result, open(file_path, 'w', encoding='utf-8'))
 
 
-def parse_course_detail(content, output_folder, tid):
+def parse_course_detail(content, doc_only):
     """parse course video and doc detail from response body or xxx.json file"""
     # json_file_path = os.path.join(output_folder, '{}.json'.format(tid))
     # if os.path.exists(json_file_path):
@@ -191,13 +191,14 @@ def parse_course_detail(content, output_folder, tid):
             logger.info('    %s', last_lesson_name)
             continue
 
-        video_match = video_ptn.findall(line)
-        if video_match and last_lesson_name in term[last_week_name]:
-            content_id, _id, lecture_name, term_id = video_match[0]
-            file_url = get_file_url(content_id, _id)
-            postfix = 'mp4' if 'mp4' in file_url else 'flv'
-            term[last_week_name][last_lesson_name].append(('{}.{}'.format(lecture_name, postfix), file_url))
-            logger.info('        %s', '{}.{}'.format(lecture_name, postfix))
+        if not doc_only:
+            video_match = video_ptn.findall(line)
+            if video_match and last_lesson_name in term[last_week_name]:
+                content_id, _id, lecture_name, term_id = video_match[0]
+                file_url = get_file_url(content_id, _id)
+                postfix = 'mp4' if 'mp4' in file_url else 'flv'
+                term[last_week_name][last_lesson_name].append(('{}.{}'.format(lecture_name, postfix), file_url))
+                logger.info('        %s', '{}.{}'.format(lecture_name, postfix))
 
         doc_match = doc_ptn.findall(line)
         if doc_match and last_lesson_name in term[last_week_name]:
@@ -285,7 +286,7 @@ def validate_link(url):
     return course_name, tid
 
 
-def main(course, username, passwd, output):
+def main(course, username, passwd, output, doc_only):
     # 1.登陆
     login(username, passwd)
     course_name, tid = validate_link(course)
@@ -295,7 +296,7 @@ def main(course, username, passwd, output):
     # 2.获取该门课的详情页
     resp = get_course_detail(tid)
     # 3.解析课程详情页，获取资源的详细地址
-    term = parse_course_detail(resp.content, output_folder, tid)
+    term = parse_course_detail(resp.content, doc_only)
     # 4.下载所有资源
     download_file(term, output_folder)
 
@@ -322,5 +323,6 @@ if __name__ == '__main__':
                         required=False,
                         help='文件下载路径，默认：当前路径')
     parser.add_argument("url", type=str, help="课程链接")
+    parser.add_argument("--doc_only", action="store_true", help="只下载课程课件")
     result = parser.parse_args()
-    main(result.url, result.username, result.passwd, result.output)
+    main(result.url, result.username, result.passwd, result.output, result.doc_only)
