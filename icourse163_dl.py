@@ -120,7 +120,7 @@ def get_course_id_from_url(url):
     return course_id_matcher[0]
 
 
-def get_course_base_info(course_id):
+def get_course_base_info(course_id, url):
     """访问课程主页，获取课程信息
     优先使用`第一次开课`的tid，如果传过来的参数是最后一次开课，可能视频只放出来一部分
 
@@ -220,15 +220,21 @@ def reindex_file_name(term):
         lesson_index_counter = 1  # 重新索引lesson
         for lesson_name, lesson_value in week_value.items():
             new_term[week_name][lesson_name] = OrderedDict()
-            lecture_index_counter = 1  # 重新索引lecture
+            video_index_counter = 1  # 重新索引视频
+            doc_index_counter = 1  # 重新索引课件
             for lecture_name, lecture_url in lesson_value.items():
                 if '视频' in lecture_name or '课件' in lecture_name:
                     lecture_name = lesson_name
+                if lecture_name.endswith('.mp4') or lecture_name.endswith('.flv'):
+                    lecture_index_counter = video_index_counter
+                else:
+                    lecture_index_counter = doc_index_counter
                 lecture_name = PREFIX_LECTURE_INDEX_PTN.sub('', lecture_name)
                 file_name = '{}.{}.{}_{}'.format(week_index_counter, lesson_index_counter, lecture_index_counter,
                                                  lecture_name)
                 new_term[week_name][lesson_name][file_name] = lecture_url
                 lecture_index_counter += 1
+                doc_index_counter += 1
             lesson_index_counter += 1
         week_index_counter += 1
     return new_term
@@ -395,7 +401,7 @@ def get_download_urls(tid, doc_only=False):
 def main(url, username, password, output, doc_only):
     login(username, password)
     course_id = get_course_id_from_url(url)
-    course_info = get_course_base_info(course_id)
+    course_info = get_course_base_info(course_id, url)
     term = None
     for tid in course_info['tids'][::-1]:
         try:
