@@ -279,7 +279,7 @@ def download_file(term, output_folder):
     while curr_retry < retries:
         for file_url, full_file_path in failure_list:
             try:
-                logger.info('第{}次重试，文件：'.format(curr_retry, full_file_path))
+                logger.info('第{}次重试，文件：{}'.format(curr_retry, full_file_path))
                 resume_download_file(sess, file_url, full_file_path)
             except Exception as e:
                 logger.warning('第{}次重试失败，下载链接：{}'.format(curr_retry, file_url))
