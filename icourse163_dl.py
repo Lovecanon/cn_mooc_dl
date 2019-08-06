@@ -10,6 +10,7 @@ import os
 import re
 import time
 import logging
+from datetime import datetime
 from pprint import pprint
 from collections import OrderedDict
 
@@ -131,14 +132,19 @@ def get_course_base_info(course_id, url):
     resp = retry_request(course_url, method='GET')
 
     # 每次开课都产生一个tid，即：term id
-    page_tid_ptn = re.compile('id : "(\d+)",\ncourseId :')
+    # 2019-8-6：最新开课可能没有结束，导致获取不到全部视频
+    page_tid_ptn = re.compile('id : "(\d+)",\ncourseId : "\d+",\nstartTime : "(\d+)",\nendTime : "(\d+)",')
     url_tid_ptn = re.compile('tid=(\d+)')
     page_tid_matcher = page_tid_ptn.findall(resp.text)
+    tids = []
     if page_tid_matcher:
         # 最新的开课可能关闭，无法查看视频资源。如：NUDT-1003101005
         # 最老的开课可能资源没有最新开课资源完善。如：UESTC-234010
         # 本程序采用倒序遍历的方法，首先使用最新的tid
-        tids = page_tid_matcher
+        for tid, start_time, end_time in page_tid_matcher:
+            if datetime.fromtimestamp(int(end_time[:-3])) <= datetime.now():
+                tids.append(tid)
+        print(tids)
     else:
         url_tid_matcher = url_tid_ptn.findall(url)
         if url_tid_matcher:
