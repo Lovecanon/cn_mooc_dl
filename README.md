@@ -1,5 +1,5 @@
 # 中国大学icourse163视频下载工具
-
+![image](https://github.com/Lovecanon/cn_mooc_dl/raw/master/capture/teletubbies.jpg)
 
 ### 使用
 1. 安装python3：[Download Python | Python.org](https://www.python.org/downloads/)
