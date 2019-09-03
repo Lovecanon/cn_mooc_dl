@@ -114,7 +114,7 @@ def get_course_id_from_url(url):
     # 匹配这两种URL，获取其中的课程id：NUDT-1003101005
     # https://www.icourse163.org/course/NUDT-1003101005?tid=1003312002
     # https://www.icourse163.org/learn/NUDT-1003101005?tid=1003312002#/learn/announce
-    course_id_ptn = re.compile('(?:course|learn)/([A-Z-\d]+)')
+    course_id_ptn = re.compile('(?:course|learn)/([A-Za-z-\d]+)')
     course_id_matcher = course_id_ptn.findall(url)
     if not course_id_matcher:
         raise ParamsException('未找到课程id, %s', url)
