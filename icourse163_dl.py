@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(mess
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
+# 指定ffmpeg命令地址
+FFMPEG_BIN = '/usr/local/bin/ffmpeg'
+
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36',
     'Referer': 'http://www.icourse163.org/',
@@ -216,6 +220,22 @@ def get_video_doc_url(content_id, file_id, file_type='video'):
         if doc_match:
             return doc_match[0]
 
+    # 新的公开课使用下面方法获取视频下载链接
+    session_id = sess.cookies.get('NTESSTUDYSI')
+    url1 = 'https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey={}'.format(session_id)
+    data = {
+        'bizId': file_id,
+        'bizType': '1',
+        'contentType': '1'
+    }
+    resp = retry_request(url1, data=data)
+    signature = resp.json()['result']['videoSignDto']['signature']
+    video_id = resp.json()['result']['videoSignDto']['videoId']
+    url2 = 'https://vod.study.163.com/eds/api/v1/vod/video?videoId={}&signature={}&&clientType=1'
+    resp = retry_request(url2.format(video_id, signature), method='GET')
+    for i in resp.json()['result']['videos'][::-1]:
+        return i['videoUrl']
+
 
 def reindex_file_name(term):
     """格式化lesson名称"""
@@ -274,7 +294,10 @@ def download_file(term, output_folder):
                 logger.info('[downloading] %s ---> %s', file_name, lesson_path)
                 full_file_path = os.path.join(lesson_path, file_name)
                 try:
-                    resume_download_file(sess, file_url, full_file_path)
+                    if '.m3u8' in file_url:
+                        os.system('{} -i {} -c copy -bsf:a aac_adtstoasc {}'.format(FFMPEG_BIN, file_url, full_file_path))
+                    else:
+                        resume_download_file(sess, file_url, full_file_path)
                     success_count += 1
                 except Exception as e:
                     logger.warning('下载失败，下载链接：{}'.format(file_url))
